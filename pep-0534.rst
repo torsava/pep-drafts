@@ -128,8 +128,12 @@ Ideas leading up to this PEP were discussed on the `python-dev mailing list`_.
 Backwards Compatibility
 =======================
 
-No problems with backwards compatibility are expected.  Distributions that are
-already patching Python modules to provide custom handling of missing
+If the user has a file whose name ends in ``.missing.py`` in the current
+directory, it might be inadvertently imported instead of a module further down
+on ``sys.path``.
+
+No other problems with backwards compatibility are expected: Distributions that
+are already patching Python modules to provide custom handling of missing
 dependencies can continue to do so unhindered.
 
 
