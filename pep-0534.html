@@ -9,7 +9,7 @@ to templates.  DO NOT USE THIS HTML FILE AS YOUR TEMPLATE!
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="generator" content="Docutils 0.12: http://docutils.sourceforge.net/" />
-  <title>PEP A -- Distributing a Subset of the Standard Library</title>
+  <title>PEP 0534 -- Distributing a Subset of the Standard Library</title>
   <style type="text/css">
 
 /*
@@ -369,14 +369,14 @@ ul.auto-toc {
 <td class="textlinks" align="left">
 [<b><a href="http://www.python.org/">Python Home</a></b>]
 [<b><a href="index.html">PEP Index</a></b>]
-[<b><a href="https://github.com/fedora-python/pep-drafts/blob/master/pep-A.rst">PEP Source</a></b>]
+[<b><a href="https://github.com/fedora-python/pep-drafts/blob/master/pep-0534.rst">PEP Source</a></b>]
 </td></tr></table>
 <div class="document">
 <table class="rfc2822 docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">PEP:</th><td class="field-body">XXX</td>
+<tr class="field"><th class="field-name">PEP:</th><td class="field-body">534</td>
 </tr>
 <tr class="field"><th class="field-name">Title:</th><td class="field-body">Distributing a Subset of the Standard Library</td>
 </tr>
@@ -385,7 +385,7 @@ ul.auto-toc {
 <tr class="field"><th class="field-name">Last-Modified:</th><td class="field-body">$Date$</td>
 </tr>
 <tr class="field"><th class="field-name">Author:</th><td class="field-body">Tomáš Orsava &lt;<a class="reference external" href="mailto:torsava&#64;redhat.com">torsava&#64;redhat.com</a>&gt;,
-Petr Viktorin &lt;<a class="reference external" href="mailto:pviktori&#64;redhat.com">pviktori&#64;redhat.com</a>&gt;</td>
+Petr Viktorin &lt;<a class="reference external" href="mailto:encukou&#64;gmail.com">encukou&#64;gmail.com</a>&gt;</td>
 </tr>
 <tr class="field"><th class="field-name">Status:</th><td class="field-body">Draft</td>
 </tr>
@@ -395,7 +395,7 @@ Petr Viktorin &lt;<a class="reference external" href="mailto:pviktori&#64;redhat
 </tr>
 <tr class="field"><th class="field-name">Created:</th><td class="field-body">5-Sep-2016</td>
 </tr>
-<tr class="field"><th class="field-name">Python-Version:</th><td class="field-body">3.6</td>
+<tr class="field"><th class="field-name">Python-Version:</th><td class="field-body">3.7</td>
 </tr>
 <tr class="field"><th class="field-name">Post-History:</th><td class="field-body"></td>
 </tr>
@@ -405,49 +405,41 @@ Petr Viktorin &lt;<a class="reference external" href="mailto:pviktori&#64;redhat
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference internal" href="#abstract" id="id12">Abstract</a></li>
-<li><a class="reference internal" href="#motivation" id="id13">Motivation</a><ul>
-<li><a class="reference internal" href="#cpython" id="id14">CPython</a></li>
-<li><a class="reference internal" href="#linux-and-other-distributions" id="id15">Linux and other distributions</a></li>
+<li><a class="reference internal" href="#abstract" id="id20">Abstract</a></li>
+<li><a class="reference internal" href="#motivation" id="id21">Motivation</a><ul>
+<li><a class="reference internal" href="#cpython" id="id22">CPython</a></li>
+<li><a class="reference internal" href="#linux-and-other-distributions" id="id23">Linux and other distributions</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#specification" id="id16">Specification</a></li>
-<li><a class="reference internal" href="#rationale" id="id17">Rationale</a></li>
-<li><a class="reference internal" href="#backwards-compatibility" id="id18">Backwards Compatibility</a></li>
-<li><a class="reference internal" href="#reference-implementation" id="id19">Reference Implementation</a></li>
-<li><a class="reference internal" href="#references" id="id20">References</a></li>
-<li><a class="reference internal" href="#copyright" id="id21">Copyright</a></li>
+<li><a class="reference internal" href="#specification" id="id24">Specification</a></li>
+<li><a class="reference internal" href="#rationale" id="id25">Rationale</a></li>
+<li><a class="reference internal" href="#recommendation-for-downstream-distributors" id="id26">Recommendation for Downstream Distributors</a></li>
+<li><a class="reference internal" href="#backwards-compatibility" id="id27">Backwards Compatibility</a></li>
+<li><a class="reference internal" href="#reference-and-example-implementation" id="id28">Reference and Example Implementation</a></li>
+<li><a class="reference internal" href="#references" id="id29">References</a></li>
+<li><a class="reference internal" href="#copyright" id="id30">Copyright</a></li>
 </ul>
 </div>
 <div class="section" id="abstract">
-<h1><a class="toc-backref" href="#id12">Abstract</a></h1>
-<p>Python is sometimes being distributed without its full standard library.
-However, there is as of yet no standardized way of dealing with importing a
-missing standard library module.  This PEP proposes a mechanism for identifying
-which standard library modules are missing and puts forth a method of how
-attempts to import a missing standard library module should be handled.</p>
+<h1><a class="toc-backref" href="#id20">Abstract</a></h1>
+<p>Python is often being built or distributed without its full standard library.
+However, there is as of yet no standard, user friendly way of properly informing the user about the failure to import such missing <cite>stdlib</cite> modules.  This PEP proposes a mechanism for identifying standard library modules and informing the user appropriately.</p>
 </div>
 <div class="section" id="motivation">
-<h1><a class="toc-backref" href="#id13">Motivation</a></h1>
+<h1><a class="toc-backref" href="#id21">Motivation</a></h1>
 <p>There are several use cases for including only a subset of Python's standard
-library.  However, there is so far no formal specification of how to properly
-implement distribution of a subset of the standard library.  Namely, how to
-safely handle attempts to import a missing <em>stdlib</em> module, and display an
-informative error message.</p>
+library.  However, there is so far no user-friendly mechanism for informing the user <em>why</em> a stdlib module is missing and how to remedy the situation appropriately.</p>
 <div class="section" id="cpython">
-<h2><a class="toc-backref" href="#id14">CPython</a></h2>
+<h2><a class="toc-backref" href="#id22">CPython</a></h2>
 <p>When one of Python standard library modules (such as <tt class="docutils literal">_sqlite3</tt>) cannot be
 compiled during a Python build because of missing dependencies (e.g. SQLite
-header files), the module is simply skipped.</p>
-<p>If you then install this compiled Python and use it to try to import one of the
-missing modules, Python will go through the <tt class="docutils literal">sys.path</tt> entries looking for
-it.  It won't find it among the <em>stdlib</em> modules and thus it will continue onto
-<tt class="docutils literal"><span class="pre">site-packages</span></tt> and fail with a <a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#ModuleNotFoundError">ModuleNotFoundError</a> <a class="footnote-reference" href="#id2" id="id3">[2]</a> if it doesn't find it.</p>
+header files), the module is simply skipped.  If you then install this compiled Python and use it to try to import one of the
+missing modules, Python will fail with a <a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#ModuleNotFoundError">ModuleNotFoundError</a> <a class="footnote-reference" href="#id2" id="id3">[2]</a>.</p>
 <p>This can confuse users who may not understand why a cleanly built Python is
 missing standard library modules.</p>
 </div>
 <div class="section" id="linux-and-other-distributions">
-<h2><a class="toc-backref" href="#id15">Linux and other distributions</a></h2>
+<h2><a class="toc-backref" href="#id23">Linux and other distributions</a></h2>
 <p>Many Linux and other distributions are already separating out parts of the
 standard library to standalone packages.  Among the most commonly excluded
 modules are the <tt class="docutils literal">tkinter</tt> module, since it draws in a dependency on the
@@ -463,59 +455,34 @@ omitted modules, potentially leaving users baffled as to where to find them.</p>
 </div>
 </div>
 <div class="section" id="specification">
-<h1><a class="toc-backref" href="#id16">Specification</a></h1>
-<p>When, for any reason, a standard library module is not to be included with the
-rest, a file with its name and the extension <tt class="docutils literal">.missing.py</tt> shall be created
-and placed in the directory the module itself would have occupied.  This file
-can contain any Python code, however, it <em>should</em> raise a <a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#ModuleNotFoundError">ModuleNotFoundError</a> <a class="footnote-reference" href="#id2" id="id4">[2]</a>
-with a helpful error message.</p>
-<p>Currently, when Python tries to import a module <tt class="docutils literal">XYZ</tt>, the <tt class="docutils literal">FileFinder</tt>
-path hook goes through the entries in <tt class="docutils literal">sys.path</tt>, and in each location looks
-for a file whose name is <tt class="docutils literal">XYZ</tt> with one of the valid suffixes (e.g. <tt class="docutils literal">.so</tt>,
-..., <tt class="docutils literal">.py</tt>, ..., <tt class="docutils literal">.pyc</tt>).  The suffixes are tried in order.  If none of
-them are found, Python goes on to try the next directory in <tt class="docutils literal">sys.path</tt>.</p>
-<p>The <tt class="docutils literal">.missing.py</tt> extension will be added to the end of the list, and
-configured to be handled by <tt class="docutils literal">SourceFileLoader</tt>.  Thus, if a module is not
-found in its proper location, the <tt class="docutils literal">XYZ.missing.py</tt> file is found and
-executed, and further locations are not searched.</p>
-<p>The CPython build system will be modified to generate <tt class="docutils literal">.missing.py</tt> files for
-optional modules that were not built.</p>
+<h1><a class="toc-backref" href="#id24">Specification</a></h1>
+<p>The <a class="reference external" href="https://docs.python.org/3.7/library/sysconfig.html">sysconfig</a> <a class="footnote-reference" href="#id5" id="id6">[3]</a> module will be extended by two functions: <cite>sysconfig.get_stdlib_modules()</cite> and <cite>sysconfig.get_optional_modules()</cite>. These will provide a list of permanent and optional Python standard library modules for the given platform respectively. These lists will be generated during the Python build process and saved in <cite>_sysconfigdata-*.py</cite> file along with other <a class="reference external" href="https://docs.python.org/3.7/library/sysconfig.html">sysconfig</a> <a class="footnote-reference" href="#id5" id="id7">[3]</a> values.</p>
+<p>The default implementation of the <a class="reference external" href="https://docs.python.org/3.7/library/sys.html#sys.excepthook">sys.excepthook</a> <a class="footnote-reference" href="#id16" id="id17">[7]</a> function will then be modified to dispense an appropriate message when it detects a failure to import a module identified by one of the two new <a class="reference external" href="https://docs.python.org/3.7/library/sysconfig.html">sysconfig</a> <a class="footnote-reference" href="#id5" id="id8">[3]</a> functions as belonging to the Python standard library.</p>
 </div>
 <div class="section" id="rationale">
-<h1><a class="toc-backref" href="#id17">Rationale</a></h1>
-<p>The mechanism of handling missing standard library modules through the use of
-the <tt class="docutils literal">.missing.py</tt> files was chosen due to its advantages both for CPython
-itself and for Linux and other distributions that are packaging it.</p>
-<p>The missing pieces of the standard library can be subsequently installed simply
-by putting the module files in their appropriate location.  They will then take
-precedence over the corresponding <tt class="docutils literal">.missing.py</tt> files.  This makes
-installation simple for Linux package managers.</p>
-<p>This mechanism also solves the minor issue of importing a module from
-<tt class="docutils literal"><span class="pre">site-packages</span></tt> with the same name as a missing standard library module.
-Now, Python will import the <tt class="docutils literal">.missing.py</tt> file and won't ever look for a
-<em>stdlib</em> module in <tt class="docutils literal"><span class="pre">site-packages</span></tt>.</p>
-<p>In addition, this method of handling missing <em>stdlib</em> modules can be
-implemented in a succinct, non-intrusive way in CPython, and thus won't add to
-the complexity of the existing code base.</p>
-<p>The <tt class="docutils literal">.missing.py</tt> file can be customized by the packager to provide any
-desirable behaviour.  While we strongly recommend that these files only raise a
-<a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#ModuleNotFoundError">ModuleNotFoundError</a> <a class="footnote-reference" href="#id2" id="id5">[2]</a> with an appropriate message, there is no reason to limit
-customization options.</p>
-<p>Ideas leading up to this PEP were discussed on the <a class="reference external" href="https://mail.python.org/pipermail/python-dev/2016-July/145534.html">python-dev mailing list</a> <a class="footnote-reference" href="#id6" id="id7">[3]</a>.</p>
+<h1><a class="toc-backref" href="#id25">Rationale</a></h1>
+<p>The <a class="reference external" href="https://docs.python.org/3.7/library/sys.html#sys.excepthook">sys.excepthook</a> <a class="footnote-reference" href="#id16" id="id18">[7]</a> function gets called when a raised exception is uncaught and the program is about to exit or—in an interactive session—the control is being returned to the prompt. This makes it a perfect place for customized error messages, as it will not influence caught errors and thus not slow down normal execution of Python scripts.</p>
+<p>The inclusion of the <cite>sysconfig.get_stdlib_modules()</cite> and <cite>sysconfig.get_optional_modules()</cite> functions will also provide a long sought-after way of easily listing Python standard library modules.</p>
+<p>Ideas leading up to this PEP were discussed on the <a class="reference external" href="https://mail.python.org/pipermail/python-dev/2016-July/145534.html">python-dev mailing list</a> <a class="footnote-reference" href="#id9" id="id10">[4]</a> and subsequently on <a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2016-December/043907.html">python-ideas</a> <a class="footnote-reference" href="#id11" id="id12">[5]</a>.</p>
+</div>
+<div class="section" id="recommendation-for-downstream-distributors">
+<h1><a class="toc-backref" href="#id26">Recommendation for Downstream Distributors</a></h1>
+<p>By patching <a class="reference external" href="https://docs.python.org/3.7/library/site.html">site.py</a> <a class="footnote-reference" href="#id13" id="id14">[6]</a> or modifying <a class="reference external" href="https://docs.python.org/3.7/library/site.html">sitecustomize.py</a> <a class="footnote-reference" href="#id13" id="id15">[6]</a> to provide their own implementation of the <a class="reference external" href="https://docs.python.org/3.7/library/sys.html#sys.excepthook">sys.excepthook</a> <a class="footnote-reference" href="#id16" id="id19">[7]</a> function, Python distributors can display tailor-made error messages for any uncaught exceptions, including informing the user of a proper, distro-specific way to install missing standard library modules upon encountering a <a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#ModuleNotFoundError">ModuleNotFoundError</a> <a class="footnote-reference" href="#id2" id="id4">[2]</a>.</p>
+<p>An <a class="reference internal" href="#reference-and-example-implementation">example implementation</a> is attached to this PEP.</p>
 </div>
 <div class="section" id="backwards-compatibility">
-<h1><a class="toc-backref" href="#id18">Backwards Compatibility</a></h1>
+<h1><a class="toc-backref" href="#id27">Backwards Compatibility</a></h1>
 <p>No problems with backwards compatibility are expected.  Distributions that are
 already patching Python modules to provide custom handling of missing
 dependencies can continue to do so unhindered.</p>
 </div>
-<div class="section" id="reference-implementation">
-<h1><a class="toc-backref" href="#id19">Reference Implementation</a></h1>
-<p>Reference implementation can be found on <a class="reference external" href="https://github.com/torsava/cpython/pull/1">GitHub</a> <a class="footnote-reference" href="#id8" id="id9">[4]</a> and is also accessible in
-the form of a <a class="reference external" href="https://github.com/torsava/cpython/pull/1.patch">patch</a> <a class="footnote-reference" href="#id10" id="id11">[5]</a>.</p>
+<div class="section" id="reference-and-example-implementation">
+<h1><a class="toc-backref" href="#id28">Reference and Example Implementation</a></h1>
+<p>TBD</p>
+<!-- Reference implementation can be found on `GitHub`_ and is also accessible in the form of a `patch`_. -->
 </div>
 <div class="section" id="references">
-<h1><a class="toc-backref" href="#id20">References</a></h1>
+<h1><a class="toc-backref" href="#id29">References</a></h1>
 <table class="docutils footnote" frame="void" id="debian-patch" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
@@ -525,30 +492,42 @@ the form of a <a class="reference external" href="https://github.com/torsava/cpy
 <table class="docutils footnote" frame="void" id="id2" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[2]</td><td><em>(<a class="fn-backref" href="#id3">1</a>, <a class="fn-backref" href="#id4">2</a>, <a class="fn-backref" href="#id5">3</a>)</em> <a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#ModuleNotFoundError">https://docs.python.org/3.7/library/exceptions.html#ModuleNotFoundError</a></td></tr>
+<tr><td class="label">[2]</td><td><em>(<a class="fn-backref" href="#id3">1</a>, <a class="fn-backref" href="#id4">2</a>)</em> <a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#ModuleNotFoundError">https://docs.python.org/3.7/library/exceptions.html#ModuleNotFoundError</a></td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id6" rules="none">
+<table class="docutils footnote" frame="void" id="id5" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id7">[3]</a></td><td><a class="reference external" href="https://mail.python.org/pipermail/python-dev/2016-July/145534.html">https://mail.python.org/pipermail/python-dev/2016-July/145534.html</a></td></tr>
+<tr><td class="label">[3]</td><td><em>(<a class="fn-backref" href="#id6">1</a>, <a class="fn-backref" href="#id7">2</a>, <a class="fn-backref" href="#id8">3</a>)</em> <a class="reference external" href="https://docs.python.org/3.7/library/sysconfig.html">https://docs.python.org/3.7/library/sysconfig.html</a></td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id8" rules="none">
+<table class="docutils footnote" frame="void" id="id9" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id9">[4]</a></td><td><a class="reference external" href="https://github.com/torsava/cpython/pull/1">https://github.com/torsava/cpython/pull/1</a></td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id10">[4]</a></td><td><a class="reference external" href="https://mail.python.org/pipermail/python-dev/2016-July/145534.html">https://mail.python.org/pipermail/python-dev/2016-July/145534.html</a></td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id10" rules="none">
+<table class="docutils footnote" frame="void" id="id11" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id11">[5]</a></td><td><a class="reference external" href="https://github.com/torsava/cpython/pull/1.patch">https://github.com/torsava/cpython/pull/1.patch</a></td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id12">[5]</a></td><td><a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2016-December/043907.html">https://mail.python.org/pipermail/python-ideas/2016-December/043907.html</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id13" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[6]</td><td><em>(<a class="fn-backref" href="#id14">1</a>, <a class="fn-backref" href="#id15">2</a>)</em> <a class="reference external" href="https://docs.python.org/3.7/library/site.html">https://docs.python.org/3.7/library/site.html</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id16" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[7]</td><td><em>(<a class="fn-backref" href="#id17">1</a>, <a class="fn-backref" href="#id18">2</a>, <a class="fn-backref" href="#id19">3</a>)</em> <a class="reference external" href="https://docs.python.org/3.7/library/sys.html#sys.excepthook">https://docs.python.org/3.7/library/sys.html#sys.excepthook</a></td></tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="copyright">
-<h1><a class="toc-backref" href="#id21">Copyright</a></h1>
+<h1><a class="toc-backref" href="#id30">Copyright</a></h1>
 <p>This document has been placed in the public domain.</p>
 <!-- Local Variables:
 mode: indented-text
