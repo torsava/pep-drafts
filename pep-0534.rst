@@ -2,9 +2,9 @@ PEP: 534
 Title: Distributing a Subset of the Standard Library
 Version: $Revision$
 Last-Modified: $Date$
-Author: Tomáš Orsava <torsava at redhat.com>,
-        Petr Viktorin <encukou at gmail.com>,
-        Nick Coghlan <ncoghlan at gmail.com>
+Author: Tomáš Orsava <tomas.n@orsava.cz>,
+        Petr Viktorin <encukou@gmail.com>,
+        Nick Coghlan <ncoghlan@gmail.com>
 Status: Draft
 Type: Standards Track
 Content-Type: text/x-rst
